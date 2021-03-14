@@ -33,7 +33,7 @@ const Login = () => {
       })
       .catch(({ response }) => {
         if (response) {
-          enqueueSnackbar(response?.data.error, { variant: "error" });
+          console.log(response?.data.error);
         }
       });
   };
