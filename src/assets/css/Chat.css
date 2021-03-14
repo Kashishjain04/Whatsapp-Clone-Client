@@ -95,3 +95,6 @@
   color: #808080;
   padding: 10px;
 }
+.emoji-mart-emoji {
+  outline-width: 0;
+}

@@ -4,10 +4,40 @@ import { SnackbarProvider } from "notistack";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 import "../assets/css/Login.css";
+import GoogleLogin from "react-google-login";
+import { authInstance } from "../api";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/userSlice";
+import { setRooms } from "../redux/roomSlice";
 
 const Login = () => {
-  const [loginModalVisible, setLoginModalVisible] = useState(false),
+  const dispatch = useDispatch(),
+    [loginModalVisible, setLoginModalVisible] = useState(false),
     [signupModalVisible, setSignupModalVisible] = useState(false);
+
+  const googleSuccess = (res) => {
+    const profile = res?.profileObj;
+    const obj = {
+      name: profile.name,
+      email: profile.email,
+      pic: profile.imageUrl,
+      googleId: profile.googleId,
+    };
+    authInstance
+      .post("/googleLogin", obj)
+      .then(({ data }) => {
+        localStorage.setItem("token", data?.token);
+        localStorage.setItem("user", JSON.stringify(data?.user));
+        dispatch(login(data.user));
+        dispatch(setRooms(data.user?.rooms));
+      })
+      .catch(({ response }) => {
+        if (response) {
+          enqueueSnackbar(response?.data.error, { variant: "error" });
+        }
+      });
+  };
+  const googleFailure = (err) => console.log(err);
 
   return (
     <div className="login">
@@ -32,6 +62,13 @@ const Login = () => {
           Signup
         </Button>
       </div>
+      <GoogleLogin
+        clientId="973819059514-8l89asa6vo0eh33oubuotqrugos64ov0.apps.googleusercontent.com"
+        buttonText="Login"
+        onSuccess={googleSuccess}
+        onFailure={googleFailure}
+        cookiePolicy={"single_host_origin"}
+      />
       <SnackbarProvider
         maxSnack={3}
         anchorOrigin={{ horizontal: "right", vertical: "top" }}

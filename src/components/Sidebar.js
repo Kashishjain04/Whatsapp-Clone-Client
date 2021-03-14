@@ -67,12 +67,9 @@ function Sidebar() {
     <div className="sidebar">
       <div className="sidebar__header">
         <IconButton onClick={logoutHandler} className="sidebar__headerAvatar">
-          <Avatar>
-            {/* {str.split(" ").forEach((s) => console.log(s.charAt(0)))}
-            {user.name.split(" ")[0].charAt(0) +
-              user.name.split(" ")[1].charAt(0)} */}
-          </Avatar>
+          <Avatar src={user.pic ? user.pic : ""} />
         </IconButton>
+        <h3>{user.name}</h3>
         <div className="sidebar__headerRight">
           <IconButton onClick={createRoomHandler}>
             <Create title="Create a Room" />

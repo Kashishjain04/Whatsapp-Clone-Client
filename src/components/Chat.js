@@ -1,4 +1,4 @@
-import { Avatar, IconButton } from "@material-ui/core";
+import { Avatar, ClickAwayListener, IconButton } from "@material-ui/core";
 import {
   AttachFile,
   SearchOutlined,
@@ -6,20 +6,27 @@ import {
   InsertEmoticon,
   Mic,
 } from "@material-ui/icons";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { appInstance as axios } from "../api";
 import "../assets/css/Chat.css";
 import { selectActiveRoomIndex, selectRooms } from "../redux/roomSlice";
 import { selectUser } from "../redux/userSlice";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
 
 function Chat() {
-  const [message, setMessage] = useState(""),
+  const messagesEndRef = useRef(null),
+    [message, setMessage] = useState(""),
+    [emoji, setEmoji] = useState(false),
     user = useSelector(selectUser),
     rooms = useSelector(selectRooms),
-    activeRoomIndex = useSelector(selectActiveRoomIndex);
+    activeRoomIndex = useSelector(selectActiveRoomIndex),
+    activeRoom = rooms?.[activeRoomIndex];
 
-  const activeRoom = rooms?.[activeRoomIndex];
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [activeRoom]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -43,6 +50,18 @@ function Chat() {
       .catch((err) => console.log(err.message));
   };
 
+  const emojiPicker = (
+    <ClickAwayListener onClickAway={() => setEmoji(false)}>
+      <Picker
+        set="apple"
+        title="Pick your emoji…"
+        emoji="point_up"
+        onSelect={(e) => setMessage((prev) => prev + e.native)}
+        style={{ position: "absolute", bottom: "63px", zIndex: 1 }}
+      />
+    </ClickAwayListener>
+  );
+
   return (
     <div className="chat">
       <div className="chat__header">
@@ -65,7 +84,7 @@ function Chat() {
       </div>
       <div className="chat__body">
         {activeRoom?.messages.map((message, index) => (
-          <>
+          <React.Fragment key={index}>
             {activeRoom?.messages[index - 1]?.timestamp.split("/")[0] !==
               message.timestamp.split("/")[0] && (
               <span className="chat__centerTimestamp">
@@ -84,12 +103,16 @@ function Chat() {
                 {message.timestamp.split(", ")[1]}
               </span>
             </p>
-          </>
+          </React.Fragment>
         ))}
+        <div ref={messagesEndRef} />
       </div>
       {activeRoom && (
         <div className="chat__footer">
-          <InsertEmoticon />
+          {emoji && emojiPicker}
+          <IconButton onClick={() => setEmoji((prev) => !prev)}>
+            <InsertEmoticon />
+          </IconButton>
           <form onSubmit={sendMessage}>
             <input
               type="text"
