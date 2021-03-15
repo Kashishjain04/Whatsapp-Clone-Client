@@ -10,14 +10,14 @@ function App() {
   const user = useSelector(selectUser),
     dispatch = useDispatch();
 
+  const storedUser = localStorage.getItem("user");
   useEffect(async () => {
-    const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      dispatch(login(JSON.parse(storedUser)));
       const rooms = await roomActions.getUserRooms();
       dispatch(setRooms(rooms));
+      dispatch(login(JSON.parse(storedUser)));
     }
-  }, []);
+  }, [storedUser]);
 
   return <div>{user ? <Home /> : <Login />}</div>;
 }

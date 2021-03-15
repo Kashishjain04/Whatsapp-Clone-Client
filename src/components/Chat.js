@@ -94,10 +94,10 @@ function Chat() {
             <p
               key={message._id}
               className={`chat__message ${
-                message.user?._id === user._id && "chat__reciever"
+                message.userId === user._id && "chat__reciever"
               }`}
             >
-              <span className="chat__name">{message.user?.name}</span>
+              <span className="chat__name">{message.userName}</span>
               {message.message}
               <span className="chat__timestamp">
                 {message.timestamp.split(", ")[1]}

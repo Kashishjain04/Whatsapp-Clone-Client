@@ -34,10 +34,6 @@ function Sidebar() {
             },
           }
         )
-        .then(async () => {
-          const rooms = await roomActions.getUserRooms();
-          dispatch(setRooms(rooms));
-        })
         .catch((err) => console.log(err.message));
     }
   };

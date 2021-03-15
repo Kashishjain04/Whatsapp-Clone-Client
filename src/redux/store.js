@@ -7,4 +7,5 @@ export default configureStore({
     user: userReducer,
     room: roomReducer,
   },
+  devTools: !process.env.NODE_ENV || process.env.NODE_ENV === "development",
 });
