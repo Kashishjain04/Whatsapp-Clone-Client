@@ -1,0 +1,75 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  flex: 0.35;
+}
+
+.profile__header {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 20px;
+  background-color: #00bfa5;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.profile__header span {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.profile__pic {
+  height: 258px;
+  display: grid;
+  place-items: center;
+}
+
+.profile__picInner {
+  display: flex;
+}
+
+.profile__pic .MuiAvatar-root {
+  width: 200px;
+  height: 200px;
+}
+
+.profile__name {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 70px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.profile__name > span {
+  color: #009688;
+  font-size: 14px;
+}
+
+.profile__name > .name {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.profile__picOverlay {
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #666666cc;
+}
+.profile__picOverlay .MuiSvgIcon-root {
+  font-size: 36px;
+  color: #fff;
+}
+.profile__picInner:hover .profile__picOverlay {
+  visibility: visible;
+}

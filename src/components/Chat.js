@@ -65,7 +65,7 @@ function Chat() {
   return (
     <div className="chat">
       <div className="chat__header">
-        <Avatar>{activeRoom ? activeRoom.name[0] : "RN"}</Avatar>
+        <Avatar>{activeRoom?.name ? activeRoom.name[0] : "RN"}</Avatar>
         <div className="chat__headerInfo">
           <h3>{activeRoom ? activeRoom.name : "Select a Chat"}</h3>
           <p>{activeRoom?._id}</p>

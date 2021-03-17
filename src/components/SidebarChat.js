@@ -17,10 +17,10 @@ function SidebarChat({ room, index }) {
       <div className="sidebarChat__info">
         <h2>{room.name}</h2>
         {room?.messages && room.messages.length !== 0 ? (
-          <p>
+          <span>
             <h4>{room?.messages[room?.messages?.length - 1]?.userName}: </h4>
             {room?.messages[room?.messages?.length - 1]?.message}
-          </p>
+          </span>
         ) : (
           <p>No Messages</p>
         )}

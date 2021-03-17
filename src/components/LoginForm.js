@@ -21,10 +21,13 @@ const LoginForm = () => {
         { headers: { "Content-Type": "application/json" } }
       )
       .then(({ data }) => {
+        const { _id, name, pic, email, isGoogle } = data?.user;
         localStorage.setItem("token", data?.token);
-        localStorage.setItem("user", JSON.stringify(data?.user));
-        const { _id, name, email } = data.user;
-        dispatch(login({ _id, name, email }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ _id, name, pic, email, isGoogle })
+        );
+        dispatch(login({ _id, name, pic, email, isGoogle }));
         dispatch(setRooms(data.user?.rooms));
       })
       .catch(({ response }) => {

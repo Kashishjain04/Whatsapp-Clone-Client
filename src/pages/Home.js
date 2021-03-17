@@ -5,10 +5,12 @@ import Pusher from "pusher-js";
 import "../App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRooms, setActiveRoomIndex, setRooms } from "../redux/roomSlice";
+import Profile from "./Profile";
 
 function Home() {
   const dispatch = useDispatch(),
-    rooms = useSelector(selectRooms);
+    rooms = useSelector(selectRooms),
+    [profile, setProfile] = useState(false);
 
   useEffect(() => {
     var pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
@@ -40,7 +42,11 @@ function Home() {
   return (
     <div className="app">
       <div className="app__body">
-        <Sidebar />
+        {profile ? (
+          <Profile setProfile={setProfile} />
+        ) : (
+          <Sidebar setProfile={setProfile} />
+        )}
         <Chat />
       </div>
     </div>

@@ -10,7 +10,7 @@
 .sidebarChat__info {
   margin-left: 15px;
 }
-.sidebarChat__info > p > h4 {
+.sidebarChat__info > span > h4 {
   display: inline;
 }
 

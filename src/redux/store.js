@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import roomReducer from "./roomSlice";
 import userReducer from "./userSlice";
 
@@ -8,4 +8,5 @@ export default configureStore({
     room: roomReducer,
   },
   devTools: !process.env.NODE_ENV || process.env.NODE_ENV === "development",
+  middleware: [...getDefaultMiddleware({ immutableCheck: false })],
 });

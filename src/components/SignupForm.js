@@ -21,9 +21,13 @@ const SignupForm = () => {
         { headers: { "Content-Type": "application/json" } }
       )
       .then(({ data }) => {
+        const { _id, name, pic, email, isGoogle } = data?.user;
         localStorage.setItem("token", data?.token);
-        localStorage.setItem("user", JSON.stringify(data?.user));
-        dispatch(login(data.user));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ _id, name, pic, email, isGoogle })
+        );
+        dispatch(login({ _id, name, pic, email, isGoogle }));
       })
       .catch(({ response }) => {
         if (response) {

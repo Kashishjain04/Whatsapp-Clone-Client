@@ -1,24 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/css/Sidebar.css";
 import SidebarChat from "./SidebarChat";
 import { Add, Create, MoreVert, SearchOutlined } from "@material-ui/icons";
 import { Avatar, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, logout } from "../redux/userSlice";
-import { selectRooms, setRooms, roomsCleanup } from "../redux/roomSlice";
+import { selectRooms, roomsCleanup } from "../redux/roomSlice";
 import { appInstance as axios } from "../api";
 import roomActions from "../utils/actions";
 
-function Sidebar() {
+function Sidebar({ setProfile }) {
   const user = useSelector(selectUser),
-    rooms = useSelector(selectRooms),
-    dispatch = useDispatch();
+    fetchedRooms = useSelector(selectRooms),
+    dispatch = useDispatch(),
+    [rooms, setRooms] = useState([]),
+    sRooms = fetchedRooms;
+
+  useEffect(() => {
+    setRooms(fetchedRooms);
+  }, [fetchedRooms]);
 
   const logoutHandler = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
     dispatch(logout());
     dispatch(roomsCleanup());
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   const createRoomHandler = () => {
@@ -59,13 +65,26 @@ function Sidebar() {
     }
   };
 
+  const searchRoom = (e) => {
+    if (e.target.value) {
+      const temp = sRooms?.filter((t) =>
+        t?.name.toUpperCase().includes(e.target.value.toUpperCase())
+      );
+      setRooms(temp);
+    } else {
+      setRooms(sRooms);
+    }
+  };
+
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        <IconButton onClick={logoutHandler} className="sidebar__headerAvatar">
+        <IconButton
+          onClick={() => setProfile(true)}
+          className="sidebar__headerAvatar"
+        >
           <Avatar src={user.pic ? user.pic : ""} />
         </IconButton>
-        <h3>{user.name}</h3>
         <div className="sidebar__headerRight">
           <IconButton onClick={createRoomHandler}>
             <Create title="Create a Room" />
@@ -73,7 +92,7 @@ function Sidebar() {
           <IconButton onClick={joinRoomHandler}>
             <Add title="Join a Room" />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={logoutHandler}>
             <MoreVert />
           </IconButton>
         </div>
@@ -81,7 +100,7 @@ function Sidebar() {
       <div className="sidebar__search">
         <div className="sidebar__searchContainer">
           <SearchOutlined />
-          <input placeholder="Search" type="text" />
+          <input placeholder="Search" type="text" onChange={searchRoom} />
         </div>
       </div>
       <div className="sidebar__chats">
