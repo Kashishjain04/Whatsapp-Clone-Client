@@ -1,23 +1,44 @@
 import { Avatar, IconButton } from "@material-ui/core";
 import { Delete, Edit } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authInstance } from "../api";
+import { authInstance as axios, extraInstance } from "../api";
 import "../assets/css/Profile.css";
 import { login, selectUser } from "../redux/userSlice";
 
 const Profile = ({ setProfile }) => {
   const user = useSelector(selectUser),
-    dispatch = useDispatch();
+    dispatch = useDispatch(),
+    [sigTimestamp, setSigTimestamp] = useState(0);
+
+  const getSignature = (callback, params_to_sign) => {
+    extraInstance
+      .post(
+        "/cloudinarySignature",
+        { params_to_sign },
+        {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        }
+      )
+      .then(({ data }) => {
+        callback(data.signature);
+        setSigTimestamp(data.timestamp);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const myWidget = window.cloudinary?.createUploadWidget(
     {
       cloudName: "kashish",
       uploadPreset: "whatsapp",
+      public_id: user.email,
+      api_key: process.env.REACT_APP_CLOUDINARY_KEY,
+      uploadSignatureTimestamp: sigTimestamp,
+      uploadSignature: getSignature,
     },
     (error, result) => {
       if (!error && result && result.event === "success") {
-        authInstance
+        axios
           .put(
             "/profileImage",
             { url: result.info.url },
@@ -46,7 +67,7 @@ const Profile = ({ setProfile }) => {
       return alert("New name is same as the previous name.");
     }
     if (name) {
-      authInstance
+      axios
         .put(
           "/profileName",
           { name },
@@ -69,7 +90,7 @@ const Profile = ({ setProfile }) => {
   };
 
   const deletePic = () => {
-    authInstance
+    axios
       .delete("/profileImage", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),

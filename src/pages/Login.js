@@ -5,7 +5,7 @@ import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 import "../assets/css/Login.css";
 import GoogleLogin from "react-google-login";
-import { authInstance } from "../api";
+import { authInstance as axios } from "../api";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/userSlice";
 import { setRooms } from "../redux/roomSlice";
@@ -23,7 +23,7 @@ const Login = () => {
       pic: profile.imageUrl,
       googleId: profile.googleId,
     };
-    authInstance
+    axios
       .post("/googleLogin", obj)
       .then(({ data }) => {
         const { _id, name, pic, isGoogle } = data?.user;

@@ -8,7 +8,7 @@ import {
 } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { appInstance as axios } from "../api";
+import { roomInstance as axios } from "../api";
 import "../assets/css/Chat.css";
 import { selectActiveRoomIndex, selectRooms } from "../redux/roomSlice";
 import { selectUser } from "../redux/userSlice";
@@ -32,7 +32,7 @@ function Chat() {
     e.preventDefault();
     axios
       .post(
-        "/new",
+        "/newMessage",
         {
           roomID: activeRoom._id,
           message,

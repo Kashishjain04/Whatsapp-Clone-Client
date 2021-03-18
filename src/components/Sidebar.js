@@ -6,7 +6,7 @@ import { Avatar, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, logout } from "../redux/userSlice";
 import { selectRooms, roomsCleanup } from "../redux/roomSlice";
-import { appInstance as axios } from "../api";
+import { roomInstance as axios } from "../api";
 import roomActions from "../utils/actions";
 
 function Sidebar({ setProfile }) {

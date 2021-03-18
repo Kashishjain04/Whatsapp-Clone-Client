@@ -1,4 +1,4 @@
-import { appInstance as axios } from "../api";
+import { roomInstance as axios } from "../api";
 
 const roomActions = {
   getUserRooms: async () => {
