@@ -3,41 +3,49 @@ import Chat from "../components/Chat";
 import Sidebar from "../components/Sidebar";
 import Pusher from "pusher-js";
 import "../App.css";
-import { useDispatch, useSelector } from "react-redux";
-import { selectRooms, setActiveRoomIndex, setRooms } from "../redux/roomSlice";
+import { useDispatch } from "react-redux";
+import { newMessage, updateRoomIcon } from "../redux/roomSlice";
 import Profile from "./Profile";
+import { updateImage } from "../redux/userSlice";
+import RoomInfo from "./RoomInfo";
 
 function Home() {
   const dispatch = useDispatch(),
-    rooms = useSelector(selectRooms),
-    [profile, setProfile] = useState(false);
+    [profile, setProfile] = useState(false),
+    [aboutRoom, setAboutRoom] = useState(false);
 
   useEffect(() => {
-    var pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
+    const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
       cluster: "ap2",
     });
 
-    var channel = pusher.subscribe("room");
-    channel.bind("updated", ({ key, room }) => {
-      const tRooms = [...rooms];
-      for (let i = 0; i < tRooms?.length; i++) {
-        if (tRooms[i]._id == key && room) {
-          tRooms[i] = room;
-          dispatch(setRooms(tRooms));
-          break;
-        }
+    const roomChannel = pusher.subscribe("room");
+    const userChannel = pusher.subscribe("user");
+
+    roomChannel.bind("updated", ({ key, newMsg }) => {
+      dispatch(newMessage({ key, newMsg }));
+    });
+
+    roomChannel.bind("picUpdated", ({ key, picURL }) => {
+      dispatch(updateRoomIcon({ key, picURL }));
+    });
+
+    userChannel.bind("picUpdated", ({ key, picURL }) => {
+      const localUser = JSON.parse(localStorage.getItem("user"));
+      if (localUser._id === key) {
+        dispatch(updateImage(picURL));
+        localUser.pic = picURL;
+        localStorage.setItem("user", JSON.stringify(localUser));
       }
     });
-    channel.bind("inserted", ({ room }) => {
-      const tRooms = [...rooms, room];
-      dispatch(setRooms(tRooms));
-      dispatch(setActiveRoomIndex(tRooms.length - 1));
-    });
+
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
+      roomChannel.unbind_all();
+      roomChannel.unsubscribe();
+      userChannel.unbind_all();
+      userChannel.unsubscribe();
     };
-  }, [rooms]);
+  }, []);
 
   return (
     <div className="app">
@@ -47,7 +55,8 @@ function Home() {
         ) : (
           <Sidebar setProfile={setProfile} />
         )}
-        <Chat />
+        <Chat setAboutRoom={setAboutRoom} />
+        {aboutRoom && <RoomInfo setAboutRoom={setAboutRoom} />}
       </div>
     </div>
   );

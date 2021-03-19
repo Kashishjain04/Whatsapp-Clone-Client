@@ -5,7 +5,12 @@ import { Add, Create, MoreVert, SearchOutlined } from "@material-ui/icons";
 import { Avatar, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, logout } from "../redux/userSlice";
-import { selectRooms, roomsCleanup } from "../redux/roomSlice";
+import {
+  selectRooms,
+  roomsCleanup,
+  setActiveRoomIndex,
+  setRooms,
+} from "../redux/roomSlice";
 import { roomInstance as axios } from "../api";
 import roomActions from "../utils/actions";
 
@@ -13,18 +18,19 @@ function Sidebar({ setProfile }) {
   const user = useSelector(selectUser),
     fetchedRooms = useSelector(selectRooms),
     dispatch = useDispatch(),
-    [rooms, setRooms] = useState([]),
-    sRooms = fetchedRooms;
+    [rooms, setLocalRooms] = useState([]);
 
   useEffect(() => {
-    setRooms(fetchedRooms);
+    setLocalRooms(fetchedRooms);
   }, [fetchedRooms]);
 
   const logoutHandler = () => {
-    dispatch(logout());
-    dispatch(roomsCleanup());
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    if (confirm("Are you sure you want to logout?")) {
+      dispatch(logout());
+      dispatch(roomsCleanup());
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
   };
 
   const createRoomHandler = () => {
@@ -40,7 +46,11 @@ function Sidebar({ setProfile }) {
             },
           }
         )
-        .catch((err) => console.log(err.message));
+        .then(({ data }) => {
+          const tRooms = [...fetchedRooms, data];
+          dispatch(setRooms(tRooms));
+          dispatch(setActiveRoomIndex(tRooms.length - 1));
+        });
     }
   };
 
@@ -57,9 +67,10 @@ function Sidebar({ setProfile }) {
             },
           }
         )
-        .then(async () => {
-          const rooms = await roomActions.getUserRooms();
-          dispatch(setRooms(rooms));
+        .then(({ data }) => {
+          const tRooms = [...fetchedRooms, data];
+          dispatch(setRooms(tRooms));
+          dispatch(setActiveRoomIndex(tRooms.length - 1));
         })
         .catch((err) => console.log(err.message));
     }
@@ -67,12 +78,12 @@ function Sidebar({ setProfile }) {
 
   const searchRoom = (e) => {
     if (e.target.value) {
-      const temp = sRooms?.filter((t) =>
+      const temp = fetchedRooms?.filter((t) =>
         t?.name.toUpperCase().includes(e.target.value.toUpperCase())
       );
-      setRooms(temp);
+      setLocalRooms(temp);
     } else {
-      setRooms(sRooms);
+      setLocalRooms(fetchedRooms);
     }
   };
 

@@ -1,5 +1,5 @@
 import { Avatar, IconButton } from "@material-ui/core";
-import { Delete, Edit } from "@material-ui/icons";
+import { ArrowBackSharp, Delete, Edit } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authInstance as axios, extraInstance } from "../api";
@@ -8,7 +8,6 @@ import { login, selectUser } from "../redux/userSlice";
 
 const Profile = ({ setProfile }) => {
   const user = useSelector(selectUser),
-    dispatch = useDispatch(),
     [sigTimestamp, setSigTimestamp] = useState(0);
 
   const getSignature = (callback, params_to_sign) => {
@@ -48,45 +47,38 @@ const Profile = ({ setProfile }) => {
               },
             }
           )
-          .then(({ data }) => {
-            const { _id, name, pic, email, isGoogle } = data;
-            dispatch(login({ _id, name, email, pic, isGoogle }));
-            localStorage.setItem(
-              "user",
-              JSON.stringify({ _id, name, email, pic, isGoogle })
-            );
-          })
           .catch((err) => console.log(err.message));
       }
     }
   );
 
   const updateName = () => {
-    const name = prompt("Enter New Name: ");
-    if (name === user.name) {
-      return alert("New name is same as the previous name.");
-    }
-    if (name) {
-      axios
-        .put(
-          "/profileName",
-          { name },
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        )
-        .then(({ data }) => {
-          const { _id, name, pic, email, isGoogle } = data;
-          dispatch(login({ _id, name, email, pic, isGoogle }));
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ _id, name, email, pic, isGoogle })
-          );
-        })
-        .catch((err) => console.log(err.message));
-    }
+    // const name = prompt("Enter New Name: ");
+    // if (name === user.name) {
+    //   return alert("New name is same as the previous name.");
+    // }
+    // if (name) {
+    //   axios
+    //     .put(
+    //       "/profileName",
+    //       { name },
+    //       {
+    //         headers: {
+    //           Authorization: "Bearer " + localStorage.getItem("token"),
+    //         },
+    //       }
+    //     )
+    //     .then(({ data }) => {
+    //       const { _id, name, pic, email, isGoogle } = data;
+    //       dispatch(login({ _id, name, email, pic, isGoogle }));
+    //       localStorage.setItem(
+    //         "user",
+    //         JSON.stringify({ _id, name, email, pic, isGoogle })
+    //       );
+    //     })
+    //     .catch((err) => console.log(err.message));
+    // }
+    alert("Coming Soon...");
   };
 
   const deletePic = () => {
@@ -96,21 +88,16 @@ const Profile = ({ setProfile }) => {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
-      .then(({ data }) => {
-        const { _id, name, pic, email, isGoogle } = data;
-        dispatch(login({ _id, name, email, pic, isGoogle }));
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ _id, name, email, pic, isGoogle })
-        );
-      })
       .catch((err) => console.log(err.message));
   };
 
   return (
     <div className="profile">
       <div className="profile__header">
-        <span onClick={() => setProfile(false)}>&#8592;</span> Profile
+        <IconButton onClick={() => setProfile(false)}>
+          <ArrowBackSharp />
+        </IconButton>
+        Profile
       </div>
       <div className="profile__pic">
         <div className="profile__picInner">

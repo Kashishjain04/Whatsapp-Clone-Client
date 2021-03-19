@@ -15,9 +15,9 @@
   color: #fff;
 }
 
-.profile__header span {
-  cursor: pointer;
+.profile__header > button {
   margin-right: 10px;
+  color: #fff;
 }
 
 .profile__pic {

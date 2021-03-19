@@ -15,7 +15,7 @@ import { selectUser } from "../redux/userSlice";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 
-function Chat() {
+function Chat({ setAboutRoom }) {
   const messagesEndRef = useRef(null),
     [message, setMessage] = useState(""),
     [emoji, setEmoji] = useState(false),
@@ -36,7 +36,7 @@ function Chat() {
         {
           roomID: activeRoom._id,
           message,
-          timestamp: new Date().toLocaleString(),
+          timestamp: Date.now(),
         },
         {
           headers: {
@@ -65,7 +65,9 @@ function Chat() {
   return (
     <div className="chat">
       <div className="chat__header">
-        <Avatar>{activeRoom?.name ? activeRoom.name[0] : "RN"}</Avatar>
+        <Avatar onClick={() => setAboutRoom(true)} src={activeRoom?.pic}>
+          {activeRoom?.name ? activeRoom.name[0] : "RN"}
+        </Avatar>
         <div className="chat__headerInfo">
           <h3>{activeRoom ? activeRoom.name : "Select a Chat"}</h3>
           <p>{activeRoom?._id}</p>
@@ -85,10 +87,14 @@ function Chat() {
       <div className="chat__body">
         {activeRoom?.messages.map((message, index) => (
           <React.Fragment key={index}>
-            {activeRoom?.messages[index - 1]?.timestamp.split("/")[0] !==
-              message.timestamp.split("/")[0] && (
+            {new Date(
+              activeRoom?.messages[index - 1]?.timestamp
+            ).toDateString() !== new Date(message.timestamp).toDateString() && (
               <span className="chat__centerTimestamp">
-                {message.timestamp.split(",")[0]}
+                {new Date(message.timestamp).toLocaleDateString() ===
+                new Date().toLocaleDateString()
+                  ? "TODAY"
+                  : new Date(message.timestamp).toLocaleDateString()}
               </span>
             )}
             <p
@@ -97,10 +103,12 @@ function Chat() {
                 message.userId === user._id && "chat__reciever"
               }`}
             >
-              <span className="chat__name">{message.userName}</span>
+              {message.userId !== user._id && (
+                <span className="chat__name">{message.userName}</span>
+              )}
               {message.message}
               <span className="chat__timestamp">
-                {message.timestamp.split(", ")[1]}
+                {new Date(message.timestamp).toLocaleTimeString()}
               </span>
             </p>
           </React.Fragment>

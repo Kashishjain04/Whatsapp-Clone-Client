@@ -1,0 +1,58 @@
+.roomInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 0.65;
+  overflow-x: hidden;
+}
+.roomInfo__header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  height: 30px;
+  font-size: 20px;
+  font-weight: 500;
+  border-bottom: 1px solid lightgray;
+}
+.roomInfo__header > span {
+  margin-left: 10px;
+}
+.roomInfo__body {
+  background-color: #fff;
+}
+.roomInfo__pic {
+  height: 258px;
+  display: grid;
+  place-items: center;
+}
+
+.roomInfo__picInner {
+  display: flex;
+}
+
+.roomInfo__pic .MuiAvatar-root {
+  width: 200px;
+  height: 200px;
+}
+.roomInfo__picOverlay {
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #666666cc;
+}
+.roomInfo__picOverlay .MuiSvgIcon-root {
+  font-size: 36px;
+  color: #fff;
+}
+.roomInfo__picInner:hover .roomInfo__picOverlay {
+  visibility: visible;
+}
+.roomInfo__name {
+  margin: 0 20px 25px;
+  font-size: 20px;
+  font-weight: 500;
+}

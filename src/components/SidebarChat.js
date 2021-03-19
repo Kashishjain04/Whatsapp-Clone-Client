@@ -13,7 +13,7 @@ function SidebarChat({ room, index }) {
 
   return (
     <div onClick={dispatchRoom} className="sidebarChat">
-      <Avatar>RN</Avatar>
+      <Avatar src={room?.pic}>{room?.name ? room.name[0] : "RN"}</Avatar>
       <div className="sidebarChat__info">
         <h2>{room.name}</h2>
         {room?.messages && room.messages.length !== 0 ? (
