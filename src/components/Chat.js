@@ -63,7 +63,7 @@ function Chat({ setAboutRoom }) {
     {
       cloudName: "kashish",
       uploadPreset: "whatsapp",
-      folder: `whatsapp/messages/${activeRoom._id}/`,
+      folder: `whatsapp/messages/${activeRoom?._id}/`,
       use_filename: true,
       api_key: process.env.REACT_APP_CLOUDINARY_KEY,
       uploadSignatureTimestamp: sigTimestamp,
