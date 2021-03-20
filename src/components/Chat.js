@@ -8,46 +8,87 @@ import {
 } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { roomInstance as axios } from "../api";
+import { extraInstance, roomInstance as axios } from "../api";
 import "../assets/css/Chat.css";
 import { selectActiveRoomIndex, selectRooms } from "../redux/roomSlice";
-import { selectUser } from "../redux/userSlice";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
+import ChatMessages from "./ChatMessages";
 
 function Chat({ setAboutRoom }) {
   const messagesEndRef = useRef(null),
     [message, setMessage] = useState(""),
     [emoji, setEmoji] = useState(false),
-    user = useSelector(selectUser),
     rooms = useSelector(selectRooms),
     activeRoomIndex = useSelector(selectActiveRoomIndex),
-    activeRoom = rooms?.[activeRoomIndex];
+    activeRoom = rooms?.[activeRoomIndex],
+    [sigTimestamp, setSigTimestamp] = useState(0);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeRoom]);
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    axios
+  const getSignature = (callback, params_to_sign) => {
+    extraInstance
       .post(
-        "/newMessage",
-        {
-          roomID: activeRoom._id,
-          message,
-          timestamp: Date.now(),
-        },
+        "/cloudinarySignature",
+        { params_to_sign },
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
         }
       )
+      .then(({ data }) => {
+        callback(data.signature);
+        setSigTimestamp(data.timestamp);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const messageBackend = (obj) => {
+    axios
+      .post("/newMessage", obj, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
       .then(() => {
         setMessage("");
       })
       .catch((err) => console.log(err.message));
+  };
+
+  const myWidget = window.cloudinary?.createUploadWidget(
+    {
+      cloudName: "kashish",
+      uploadPreset: "whatsapp",
+      folder: `whatsapp/messages/${activeRoom._id}/`,
+      use_filename: true,
+      api_key: process.env.REACT_APP_CLOUDINARY_KEY,
+      uploadSignatureTimestamp: sigTimestamp,
+      uploadSignature: getSignature,
+    },
+    (error, result) => {
+      if (!error && result && result.event === "success") {
+        messageBackend({
+          roomID: activeRoom._id,
+          message: result.info.url,
+          timestamp: Date.now(),
+          type: "img",
+        });
+      }
+    }
+  );
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    messageBackend({
+      roomID: activeRoom._id,
+      message,
+      timestamp: Date.now(),
+      type: "text",
+    });
   };
 
   const emojiPicker = (
@@ -76,7 +117,7 @@ function Chat({ setAboutRoom }) {
           <IconButton>
             <SearchOutlined />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={() => myWidget.open()}>
             <AttachFile />
           </IconButton>
           <IconButton>
@@ -85,34 +126,7 @@ function Chat({ setAboutRoom }) {
         </div>
       </div>
       <div className="chat__body">
-        {activeRoom?.messages.map((message, index) => (
-          <React.Fragment key={index}>
-            {new Date(
-              activeRoom?.messages[index - 1]?.timestamp
-            ).toDateString() !== new Date(message.timestamp).toDateString() && (
-              <span className="chat__centerTimestamp">
-                {new Date(message.timestamp).toLocaleDateString() ===
-                new Date().toLocaleDateString()
-                  ? "TODAY"
-                  : new Date(message.timestamp).toLocaleDateString()}
-              </span>
-            )}
-            <p
-              key={message._id}
-              className={`chat__message ${
-                message.userId === user._id && "chat__reciever"
-              }`}
-            >
-              {message.userId !== user._id && (
-                <span className="chat__name">{message.userName}</span>
-              )}
-              {message.message}
-              <span className="chat__timestamp">
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </span>
-            </p>
-          </React.Fragment>
-        ))}
+        <ChatMessages messages={activeRoom?.messages} />
         <div ref={messagesEndRef} />
       </div>
       {activeRoom && (

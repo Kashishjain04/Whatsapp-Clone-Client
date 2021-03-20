@@ -12,7 +12,6 @@ import {
   setRooms,
 } from "../redux/roomSlice";
 import { roomInstance as axios } from "../api";
-import roomActions from "../utils/actions";
 
 function Sidebar({ setProfile }) {
   const user = useSelector(selectUser),

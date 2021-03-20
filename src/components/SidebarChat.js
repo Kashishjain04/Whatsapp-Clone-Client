@@ -11,6 +11,10 @@ function SidebarChat({ room, index }) {
     dispatch(setActiveRoomIndex(index));
   };
 
+  const parseMessage = (message) => {
+    return message?.length > 25 ? message?.substring(0, 25) + "..." : message;
+  };
+
   return (
     <div onClick={dispatchRoom} className="sidebarChat">
       <Avatar src={room?.pic}>{room?.name ? room.name[0] : "RN"}</Avatar>
@@ -19,7 +23,11 @@ function SidebarChat({ room, index }) {
         {room?.messages && room.messages.length !== 0 ? (
           <span>
             <h4>{room?.messages[room?.messages?.length - 1]?.userName}: </h4>
-            {room?.messages[room?.messages?.length - 1]?.message}
+            {room?.messages[room?.messages?.length - 1]?.type === "img"
+              ? "Image"
+              : parseMessage(
+                  room?.messages[room?.messages?.length - 1]?.message
+                )}
           </span>
         ) : (
           <p>No Messages</p>
