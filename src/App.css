@@ -11,3 +11,22 @@
   height: 100vh;
   width: 100vw;
 }
+
+.loader {
+  height: 100vh;
+  width: 100vw;
+  flex: 1;
+}
+.loader > div {
+  width: 50%;
+  max-width: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.MuiLinearProgress-colorPrimary {
+  background-color: #2a2f3240 !important;
+}
+.MuiLinearProgress-barColorPrimary {
+  background-color: #00af9c !important;
+}

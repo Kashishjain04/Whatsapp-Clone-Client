@@ -15,7 +15,7 @@ const ChatMessages = ({ messages }) => {
     return messages[index - 1]?.userId === messages[index]?.userId;
   };
 
-  return messages.map((message, index) => (
+  return messages?.map((message, index) => (
     <React.Fragment key={index}>
       {!checkDateEqual(index) && (
         <span className="chat__centerTimestamp">

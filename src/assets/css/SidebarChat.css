@@ -17,3 +17,6 @@
   font-size: 16px;
   margin-bottom: 8px;
 }
+.sidebarChat.active {
+  background-color: #ebebeb;
+}

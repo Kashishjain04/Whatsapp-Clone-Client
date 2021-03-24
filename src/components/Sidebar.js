@@ -10,6 +10,7 @@ import {
   roomsCleanup,
   setActiveRoomIndex,
   setRooms,
+  selectActiveRoomIndex,
 } from "../redux/roomSlice";
 import { roomInstance as axios } from "../api";
 
@@ -17,7 +18,17 @@ function Sidebar({ setProfile }) {
   const user = useSelector(selectUser),
     fetchedRooms = useSelector(selectRooms),
     dispatch = useDispatch(),
-    [rooms, setLocalRooms] = useState([]);
+    [rooms, setLocalRooms] = useState([]),
+    activeRoomIndex = useSelector(selectActiveRoomIndex);
+
+  // Set current room as active in sidebar
+  useEffect(() => {
+    const sidebarRooms = document.querySelectorAll(".sidebarChat");
+    if (sidebarRooms) {
+      sidebarRooms.forEach((t) => t?.classList?.remove("active"));
+      sidebarRooms[activeRoomIndex]?.classList?.add("active");
+    }
+  });
 
   useEffect(() => {
     setLocalRooms(fetchedRooms);

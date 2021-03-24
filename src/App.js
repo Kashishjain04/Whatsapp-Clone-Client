@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import { LinearProgress } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -8,7 +9,8 @@ import roomActions from "./utils/actions";
 
 function App() {
   const user = useSelector(selectUser),
-    dispatch = useDispatch();
+    dispatch = useDispatch(),
+    [loading, setLoading] = useState(true);
 
   const storedUser = localStorage.getItem("user");
   useEffect(async () => {
@@ -17,9 +19,18 @@ function App() {
       dispatch(setRooms(rooms));
       dispatch(login(JSON.parse(storedUser)));
     }
+    setLoading(false);
   }, [storedUser]);
 
-  return <div>{user ? <Home /> : <Login />}</div>;
+  return loading ? (
+    <div className="loader">
+      <LinearProgress />
+    </div>
+  ) : user ? (
+    <Home />
+  ) : (
+    <Login />
+  );
 }
 
 export default App;

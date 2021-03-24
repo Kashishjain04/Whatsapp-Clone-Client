@@ -16,7 +16,7 @@ function SidebarChat({ room, index }) {
   };
 
   return (
-    <div onClick={dispatchRoom} className="sidebarChat">
+    <div id={room._id} onClick={dispatchRoom} className="sidebarChat">
       <Avatar src={room?.pic}>{room?.name ? room.name[0] : "RN"}</Avatar>
       <div className="sidebarChat__info">
         <h2>{room.name}</h2>

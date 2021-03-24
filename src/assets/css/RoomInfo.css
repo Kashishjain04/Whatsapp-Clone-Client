@@ -1,7 +1,7 @@
 .roomInfo {
   display: flex;
   flex-direction: column;
-  flex: 0.65;
+  flex: 0.4;
   overflow-x: hidden;
 }
 .roomInfo__header {
