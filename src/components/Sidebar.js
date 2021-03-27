@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../assets/css/Sidebar.css";
 import SidebarChat from "./SidebarChat";
-import { Add, Create, MoreVert, SearchOutlined } from "@material-ui/icons";
+import { Add, Create, ExitToApp, SearchOutlined } from "@material-ui/icons";
 import { Avatar, IconButton } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, logout } from "../redux/userSlice";
@@ -114,7 +114,7 @@ function Sidebar({ setProfile }) {
             <Add title="Join a Room" />
           </IconButton>
           <IconButton onClick={logoutHandler}>
-            <MoreVert />
+            <ExitToApp />
           </IconButton>
         </div>
       </div>
