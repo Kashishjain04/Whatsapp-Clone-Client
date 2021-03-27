@@ -126,7 +126,9 @@ function Chat({ setAboutRoom }) {
         </div>
       </div>
       <div className="chat__body">
-        <ChatMessages messages={activeRoom?.messages} />
+        {activeRoom?.messages && (
+          <ChatMessages messages={activeRoom.messages} />
+        )}
         <div ref={messagesEndRef} />
       </div>
       {activeRoom && (
