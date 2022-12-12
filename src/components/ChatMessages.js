@@ -43,7 +43,7 @@ const ChatMessages = ({ messages }) => {
           message.message
         )}
         <span className="chat__timestamp">
-          {new Date(message.timestamp).toLocaleTimeString()}
+          {new Date(message.timestamp).getHours() + ":" + new Date(message.timestamp).getMinutes()}
         </span>
       </p>
     </React.Fragment>
