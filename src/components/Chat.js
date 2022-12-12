@@ -111,7 +111,6 @@ function Chat({ setAboutRoom }) {
         </Avatar>
         <div className="chat__headerInfo">
           <h3>{activeRoom ? activeRoom.name : "Select a Chat"}</h3>
-          <!-- <p>{activeRoom?._id}</p> -->
         </div>
         <div className="chat__headerRight">
           <IconButton>
