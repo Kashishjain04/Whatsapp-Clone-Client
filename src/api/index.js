@@ -6,9 +6,9 @@ import axios from "axios";
 // const extraURL = "http://localhost:8080/extras";
 
 // Hosted
-const roomURL = "https://whatsapp04-backend.herokuapp.com/rooms";
-const authURL = "https://whatsapp04-backend.herokuapp.com/auth";
-const extraURL = "https://whatsapp04-backend.herokuapp.com/extras";
+const roomURL = "https://whatsapp-clone-7qop.onrender.com/rooms";
+const authURL = "https://whatsapp-clone-7qop.onrender.com/auth";
+const extraURL = "https://whatsapp-clone-7qop.onrender.com/extras";
 
 export const roomInstance = axios.create({ baseURL: roomURL });
 export const authInstance = axios.create({ baseURL: authURL });
