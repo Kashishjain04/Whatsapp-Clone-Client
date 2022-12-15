@@ -33,6 +33,7 @@
   padding-left: 20px;
 }
 .chat__headerInfo > h3 {
+  cursor: pointer;
   margin-bottom: 3px;
   font-weight: 500;
 }

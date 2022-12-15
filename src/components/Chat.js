@@ -91,6 +91,11 @@ function Chat({ setAboutRoom }) {
     });
   };
 
+  const copyRoomId = () => {
+    if(activeRoom)
+      navigator.clipboard.writeText(activeRoom?._id);
+  }
+
   const emojiPicker = (
     <ClickAwayListener onClickAway={() => setEmoji(false)}>
       <Picker
@@ -110,7 +115,7 @@ function Chat({ setAboutRoom }) {
           {activeRoom?.name ? activeRoom.name[0] : "RN"}
         </Avatar>
         <div className="chat__headerInfo">
-          <h3>{activeRoom ? activeRoom.name : "Select a Chat"}</h3>
+          <h3 onClick={copyRoomId}>{activeRoom ? activeRoom.name : "Select a Chat"}</h3>
         </div>
         <div className="chat__headerRight">
           <IconButton>
